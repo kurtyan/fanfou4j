@@ -3,7 +3,6 @@ package com.github.kurtyan.fanfou4j.http
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.*
 
 /**
  * A simple http client written in pure java, based on java.net.URLConnection.
@@ -13,20 +12,13 @@ import java.util.*
  */
 class SimpleHttpClient(private val charset: String = "utf-8", private val authenticator: Authenticator? = null) {
 
-    fun post(url: String, form: Map<String, String>): String? {
-        return this.post(url, form, { inputStream: InputStream ->
-            readFromStream(inputStream, charset)
-        })
-    }
-
-    fun <T> get(url: String, form: Map<String, String>, responseParser: (InputStream) -> T): T {
-        val finalUrl = "${url}?${buildQueryString(form)}"
+    fun <T> get(url: String, query: Map<String, String>, responseParser: (InputStream) -> T): T {
+        val finalUrl = "${url}?${buildQueryString(query)}"
         val conn = URL(finalUrl).openConnection() as HttpURLConnection
 
         authenticator?.auth(conn)
         conn.doOutput = false
         conn.requestMethod = "GET"
-        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=${charset}")
 
         return responseParser.invoke(conn.inputStream)
     }
@@ -52,11 +44,6 @@ class SimpleHttpClient(private val charset: String = "utf-8", private val authen
 
     private fun buildQueryString(form: Map<String, String>): String {
         return form.entries.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-    }
-
-    private fun readFromStream(`is`: InputStream, charset: String): String? {
-        val sc = Scanner(`is`, charset).useDelimiter("\\A")
-        return if (sc.hasNext()) sc.next() else null
     }
 
 }
