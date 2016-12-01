@@ -1,6 +1,6 @@
 package com.github.kurtyan.fanfou4j.http
 
-import java.io.InputStream
+import java.io.Reader
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -12,7 +12,7 @@ import java.net.URL
  */
 class SimpleHttpClient(private val charset: String = "utf-8", private val authenticator: Authenticator? = null) {
 
-    fun <T> get(url: String, query: Map<String, String>, responseParser: (InputStream) -> T): T {
+    fun <T> get(url: String, query: Map<String, String>, responseParser: (Reader) -> T): T {
         val finalUrl = "${url}?${buildQueryString(query)}"
         val conn = URL(finalUrl).openConnection() as HttpURLConnection
 
@@ -20,10 +20,10 @@ class SimpleHttpClient(private val charset: String = "utf-8", private val authen
         conn.doOutput = false
         conn.requestMethod = "GET"
 
-        return responseParser.invoke(conn.inputStream)
+        return parseResponse(conn, responseParser)
     }
 
-    fun <T> post(url: String, form: Map<String, String>, responseParser: (InputStream) -> T): T {
+    fun <T> post(url: String, form: Map<String, String>, responseParser: (Reader) -> T): T {
         val queryString = this.buildQueryString(form)
 
         val conn = URL(url).openConnection() as HttpURLConnection
@@ -39,8 +39,14 @@ class SimpleHttpClient(private val charset: String = "utf-8", private val authen
         os.flush()
         os.close()
 
-        return responseParser.invoke(conn.inputStream)
+        return parseResponse(conn, responseParser)
     }
+
+    private fun <T> parseResponse(conn: HttpURLConnection, parser: (Reader) -> T): T {
+        val reader = conn.inputStream.bufferedReader(kotlin.text.charset(charset))
+        return parser.invoke(reader)
+    }
+
 
     private fun buildQueryString(form: Map<String, String>): String {
         return form.entries.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
