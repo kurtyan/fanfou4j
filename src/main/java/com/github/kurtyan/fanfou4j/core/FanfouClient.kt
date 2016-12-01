@@ -17,7 +17,7 @@ import java.util.*
 class FanfouClient(profile: Authenticator) {
 
     val client = SimpleHttpClient(authenticator = profile)
-    val objectMapper = ObjectMapper()
+    val objectMapper: ObjectMapper = ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
             .registerModule(
@@ -30,16 +30,18 @@ class FanfouClient(profile: Authenticator) {
                     })
             )
 
-    fun <T> execute(request: AbstractRequest<T>): T {
-        val responseParser: (Reader) -> T = {
-            objectMapper.readValue(it, object : TypeReference<T>() {
-                override fun getType(): Type {
-                    return request.getResponseType()
-                }
-            })
-        }
+    private fun <T> createJsonParser(request: AbstractRequest<T>): (Reader) -> T = {
+        objectMapper.readValue(it, object : TypeReference<T>() {
+            override fun getType(): Type {
+                return request.getResponseType()
+            }
+        })
+    }
 
-        return when(request.getMethod()) {
+    fun <T> execute(request: AbstractRequest<T>): T {
+        val responseParser = createJsonParser(request)
+
+        return when (request.getMethod()) {
             HttpMethod.GET -> client.get(request.getUrl(), request.getParameter(), responseParser)
             HttpMethod.POST -> client.post(request.getUrl(), request.getParameter(), responseParser)
             else -> throw UnsupportedOperationException("Method=${request.getMethod()} not supported")

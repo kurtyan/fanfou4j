@@ -1,11 +1,12 @@
 package com.github.kurtyan.fanfou4j
 
-import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.github.kurtyan.fanfou4j.core.FanfouClient
 import com.github.kurtyan.fanfou4j.core.UsernamePasswordProfile
 import com.github.kurtyan.fanfou4j.request.GetPublicTimelineStatuses
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -17,11 +18,15 @@ fun main(args: Array<String>) {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
             .registerModule(
-                    SimpleModule().addDeserializer(Date::class.java, object : JsonDeserializer<Date>() {
-                        override fun deserialize(p0: JsonParser?, p1: DeserializationContext?): Date? {
-                            return p0?.valueAsString?.let {
-                                return@let Date()
+                    SimpleModule().addSerializer(Date::class.java, object : JsonSerializer<Date>() {
+                        val dateFormatterFactory = object : ThreadLocal<SimpleDateFormat>() {
+                            override fun initialValue(): SimpleDateFormat {
+                                return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
                             }
+                        }
+
+                        override fun serialize(p0: Date?, p1: JsonGenerator?, p2: SerializerProvider?) {
+                            p1?.writeString(dateFormatterFactory.get().format(p0))
                         }
                     })
             )
@@ -32,6 +37,7 @@ fun main(args: Array<String>) {
     val request = GetPublicTimelineStatuses()
     request.count = 5L
     request.sinceId = "123"
+    request.maxId = "124"
 
     val response = fanfouClient.execute(request)
 
