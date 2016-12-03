@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.github.kurtyan.fanfou4j.core.FanfouClient
-import com.github.kurtyan.fanfou4j.core.UsernamePasswordProfile
-import com.github.kurtyan.fanfou4j.request.GetPublicTimelineStatuses
+import com.github.kurtyan.fanfou4j.core.FanfouProfile
+import com.github.kurtyan.fanfou4j.core.UsernamePasswordAuthencator
+import com.github.kurtyan.fanfou4j.request.GetPublicTimelineStatusesRequest
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,8 +34,9 @@ fun main(args: Array<String>) {
 
     val username = System.getenv("username")
     val password = System.getenv("password")
-    val fanfouClient = FanfouClient(UsernamePasswordProfile(username, password))
-    val request = GetPublicTimelineStatuses()
+    val fanfouProfile = FanfouProfile(authenticator = UsernamePasswordAuthencator(username, password))
+    val fanfouClient = FanfouClient(fanfouProfile)
+    val request = GetPublicTimelineStatusesRequest()
     request.count = 5L
     request.sinceId = "123"
     request.maxId = "124"

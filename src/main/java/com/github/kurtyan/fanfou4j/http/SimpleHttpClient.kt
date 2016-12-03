@@ -34,10 +34,10 @@ class SimpleHttpClient(private val charset: String = "utf-8", private val authen
         conn.setRequestProperty("Accept-Charset", charset)
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset)
 
-        val os = conn.outputStream
-        os.write(queryString.toByteArray(charset(charset)))
-        os.flush()
-        os.close()
+        conn.outputStream.bufferedWriter(charset(charset)).use {
+            it.write(queryString)
+            it.flush()
+        }
 
         return parseResponse(conn, responseParser)
     }

@@ -9,16 +9,13 @@ import kotlin.reflect.KProperty
 /**
  * Created by yanke on 2016/12/1.
  */
-abstract class AbstractRequest<T> {
+abstract class AbstractRequest<T>(val action: String, val httpMethod: HttpMethod) {
 
     protected val parameterMap: HashMap<String, Any?> = HashMap<String, Any?>()
     val longDelegate = RequestParameterDelegate<Long>(parameterMap)
     val intDelegate = RequestParameterDelegate<Int>(parameterMap)
     val booleanDelegate = RequestParameterDelegate<Boolean>(parameterMap)
     val stringDelegate = RequestParameterDelegate<String>(parameterMap)
-
-    abstract fun getMethod(): HttpMethod
-    abstract fun getUrl(): String
 
     public fun getResponseType(): Type {
         val superClass = javaClass.genericSuperclass

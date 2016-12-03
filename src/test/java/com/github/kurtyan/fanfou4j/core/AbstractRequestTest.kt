@@ -11,21 +11,13 @@ class AbstractRequestTest {
 
     class Result() {}
 
-    class Request : AbstractRequest<Result>() {
+    class Request : AbstractRequest<Result>("N/A", HttpMethod.GET) {
         var long: Long by longDelegate
         var int: Int by intDelegate
         var boolean: Boolean by booleanDelegate
         var string: String by stringDelegate
         var underScoreTest: String by stringDelegate
         var neverSetString: String by stringDelegate
-
-        override fun getMethod(): HttpMethod {
-            throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun getUrl(): String {
-            throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
 
         fun getSuperParameterMap(): HashMap<String, Any?> {
             return super.parameterMap
