@@ -1,5 +1,7 @@
 package com.github.kurtyan.fanfou4j.http
 
+import com.github.kurtyan.fanfou4j.core.FanfouClient
+import com.github.kurtyan.fanfou4j.exception.FanfouClientException
 import java.io.Reader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -43,8 +45,13 @@ class SimpleHttpClient(private val charset: String = "utf-8", private val authen
     }
 
     private fun <T> parseResponse(conn: HttpURLConnection, parser: (Reader) -> T): T {
-        val reader = conn.inputStream.bufferedReader(kotlin.text.charset(charset))
-        return parser.invoke(reader)
+        try {
+            val reader = conn.inputStream.bufferedReader(charset(charset))
+            return parser.invoke(reader)
+        } catch (e: Exception) {
+            val text = conn.errorStream.bufferedReader(charset(charset)).readText()
+            throw FanfouClientException()
+        }
     }
 
 
