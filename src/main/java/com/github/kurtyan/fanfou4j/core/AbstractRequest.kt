@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 /**
  * Created by yanke on 2016/12/1.
  */
-abstract class AbstractRequest<T>(val action: String, val httpMethod: HttpMethod) {
+abstract class AbstractRequest<T>(open val action: String, val httpMethod: HttpMethod) {
 
     protected val parameterMap: HashMap<String, Any?> = HashMap<String, Any?>()
     val longDelegate = RequestParameterDelegate<Long>(parameterMap)
@@ -25,7 +25,7 @@ abstract class AbstractRequest<T>(val action: String, val httpMethod: HttpMethod
         return (superClass as ParameterizedType).actualTypeArguments[0]
     }
 
-    public fun getParameter(): Map<String, String> {
+    public open fun getParameter(): Map<String, String> {
         return parameterMap
                 .filter { it.value != null }
                 .mapKeys { CapitalizeUtil.toUnderScore(it.key) }

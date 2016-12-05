@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created by yanke on 2016/12/1.
  */
-class UsernamePasswordAuthencator(val username: String, val password: String) : Authenticator {
+class UsernamePasswordAuthenticator(val username: String, val password: String) : Authenticator {
 
     override fun auth(conn: HttpURLConnection): HttpURLConnection {
         val authorization = Base64.getEncoder().encodeToString("$username:$password".toByteArray(charset("utf-8")))
