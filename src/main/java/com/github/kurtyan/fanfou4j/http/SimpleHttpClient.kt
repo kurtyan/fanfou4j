@@ -1,6 +1,5 @@
 package com.github.kurtyan.fanfou4j.http
 
-import com.github.kurtyan.fanfou4j.core.FanfouClient
 import com.github.kurtyan.fanfou4j.exception.FanfouClientException
 import java.io.Reader
 import java.net.HttpURLConnection
@@ -50,7 +49,7 @@ class SimpleHttpClient(private val charset: String = "utf-8", private val authen
             return parser.invoke(reader)
         } catch (e: Exception) {
             val text = conn.errorStream.bufferedReader(charset(charset)).readText()
-            throw FanfouClientException()
+            throw FanfouClientException(conn.responseCode, text, e)
         }
     }
 
