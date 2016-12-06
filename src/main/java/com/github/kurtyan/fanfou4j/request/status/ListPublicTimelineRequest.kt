@@ -1,4 +1,4 @@
-package com.github.kurtyan.fanfou4j.request
+package com.github.kurtyan.fanfou4j.request.status
 
 import com.github.kurtyan.fanfou4j.core.AbstractRequest
 import com.github.kurtyan.fanfou4j.core.HttpMethod
