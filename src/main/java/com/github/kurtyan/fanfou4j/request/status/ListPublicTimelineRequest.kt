@@ -7,7 +7,7 @@ import com.github.kurtyan.fanfou4j.entity.Status
 /**
  * Created by yanke on 2016/12/1.
  */
-class GetPublicTimelineStatusesRequest : AbstractRequest<List<Status>>(This.action, This.method) {
+class ListPublicTimelineRequest : AbstractRequest<Array<Status>>(This.action, This.method) {
 
     object This {
         val action = "/statuses/public_timeline.json"

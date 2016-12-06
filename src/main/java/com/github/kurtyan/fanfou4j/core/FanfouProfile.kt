@@ -7,6 +7,8 @@ import com.github.kurtyan.fanfou4j.http.Authenticator
  */
 class FanfouProfile(val endpoint: String = "http://api.fanfou.com", val authenticator: Authenticator) {
 
+    constructor(authenticator: Authenticator) : this("http://api.fanfou.com", authenticator)
+
     fun getRequestUrl(action: String): String {
         return "$endpoint$action"
     }
