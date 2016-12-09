@@ -1,5 +1,6 @@
 package com.github.kurtyan.fanfou4j.core
 
+import com.github.kurtyan.fanfou4j.request.RequestMode
 import com.github.kurtyan.fanfou4j.util.CapitalizeUtil
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -16,6 +17,7 @@ abstract class AbstractRequest<T>(open val action: String, val httpMethod: HttpM
     val intDelegate = RequestParameterDelegate<Int>(parameterMap)
     val booleanDelegate = RequestParameterDelegate<Boolean>(parameterMap)
     val stringDelegate = RequestParameterDelegate<String>(parameterMap)
+    val requestModeDelegate = RequestParameterDelegate<RequestMode>(parameterMap)
 
     public fun getResponseType(): Type {
         val superClass = javaClass.genericSuperclass
