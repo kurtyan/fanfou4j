@@ -7,7 +7,7 @@ import com.github.kurtyan.fanfou4j.entity.Status
 /**
  * Created by yanke on 2016/12/5.
  */
-class DestroyFavoriteRequest : AbstractRestfulRequest<Status>("/favorites/destroy/:id.json", HttpMethod.POST){
+class DeleteFavoriteRequest : AbstractRestfulRequest<Status>("/favorites/destroy/:id.json", HttpMethod.POST){
 
     var id : String by stringDelegate
 
