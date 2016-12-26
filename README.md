@@ -28,3 +28,4 @@ ListTrendsResponse response = client.execute(request);
 
 ### Account
 ### User
+### Status
